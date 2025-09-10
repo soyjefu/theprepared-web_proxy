@@ -1,0 +1,102 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: 5ll34090@gmail.com
+      storage: "/letsencrypt/acme.json"
+      httpChallenge:
+        entryPoint: "web"
+
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  docker:
+    exposedByDefault: false
+    network: web
+  file:
+    filename: /etc/traefik/traefik.yml
+    watch: true
+
+http:
+  routers:
+    # Traefik Dashboard 라우터
+    dashboard:
+      rule: "Host(`theprepared.kr`) && PathPrefix(`/dashboard`)"
+      entryPoints: "websecure"
+      tls:
+        certResolver: "myresolver"
+      service: "api@internal"
+
+    # 모든 HTTP/HTTPS 트래픽을 Nginx로 라우팅
+    nginx-http:
+      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`django.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`soy.theprepared.kr`) || Host(`stock.theprepared.kr`)"
+      entryPoints:
+        - "web"
+      service: "nginx-service"
+      priority: 10
+
+    nginx-https:
+      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`django.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`soy.theprepared.kr`) || Host(`stock.theprepared.kr`)"
+      entryPoints:
+        - "websecure"
+      tls:
+        certResolver: "myresolver"
+      middlewares:
+        - "www-to-non-www"
+      service: "nginx-service"
+      priority: 10
+    
+    # FreshRSS HTTP 라우터 추가
+    freshrss-http:
+      rule: "Host(`rss.theprepared.kr`)"
+      entryPoints:
+        - "web"
+      service: "freshrss-service"
+      priority: 5
+
+    # FreshRSS HTTPS 라우터 추가
+    freshrss-https:
+      rule: "Host(`rss.theprepared.kr`)"
+      entryPoints:
+        - "websecure"
+      tls:
+        certResolver: "myresolver"
+      service: "freshrss-service"
+      priority: 5
+
+  
+  services: 
+    # Nginx 서비스 (Traefik이 Nginx로 모든 요청을 보냄)
+    nginx-service:
+      loadBalancer:
+        servers:
+          - url: "http://nginx:80" # Nginx 컨테이너의 80번 포트
+    
+    freshrss-service:
+      loadBalancer:
+        servers:
+          - url: "http://freshrss_app:80" # FreshRSS 컨테이너의 80번 포트
+
+    
+  middlewares:
+    www-to-non-www:
+      redirectRegex:
+        regex: "^https://www\\.(.*)"
+        replacement: "https://${1}"
+        permanent: true
