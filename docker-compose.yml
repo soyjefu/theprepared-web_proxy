@@ -32,7 +32,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ../PFM/account-app/static_collected:/var/www/html/account/static:ro
+      - ../PFM/account-app/staticfiles:/var/www/html/account/static:ro
       - ../invest/invest-app/staticfiles:/var/www/html/invest/static:ro 
       - ../websites/wordpress-app/www/html:/var/www/html/wordpress:ro
       - ../websites/wordpress-app/www/phpmyadmin:/var/www/phpmyadmin:ro
