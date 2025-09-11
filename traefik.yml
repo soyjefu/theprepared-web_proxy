@@ -28,7 +28,7 @@ api:
 providers:
   docker:
     exposedByDefault: false
-    network: web
+    network: theprepared
   file:
     filename: /etc/traefik/traefik.yml
     watch: true
