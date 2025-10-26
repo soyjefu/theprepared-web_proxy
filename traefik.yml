@@ -80,23 +80,23 @@ http:
       service: "freshrss-service"
       priority: 5
 
-  
   services: 
-    # Nginx 서비스 (Traefik이 Nginx로 모든 요청을 보냄)
+    # Nginx 서비스
     nginx-service:
       loadBalancer:
         servers:
-          - url: "http://nginx:80" # Nginx 컨테이너의 80번 포트
+          - url: "http://nginx:80"
     
+    # FreshRSS 서비스
     freshrss-service:
       loadBalancer:
         servers:
-          - url: "http://freshrss_app:80" # FreshRSS 컨테이너의 80번 포트
+          - url: "http://freshrss_app:80"
 
-    
   middlewares:
     www-to-non-www:
       redirectRegex:
         regex: "^https://www\\.(.*)"
         replacement: "https://${1}"
         permanent: true
+
