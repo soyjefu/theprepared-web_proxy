@@ -45,14 +45,14 @@ http:
 
     # 모든 HTTP/HTTPS 트래픽을 Nginx로 라우팅
     nginx-http:
-      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`django.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`soy.theprepared.kr`) || Host(`stock.theprepared.kr`)"
+      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`soy.theprepared.kr`) || Host(`stock.theprepared.kr`)"
       entryPoints:
         - "web"
       service: "nginx-service"
       priority: 10
 
     nginx-https:
-      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`django.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`soy.theprepared.kr`) || Host(`stock.theprepared.kr`)"
+      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`soy.theprepared.kr`) || Host(`stock.theprepared.kr`)"
       entryPoints:
         - "websecure"
       tls:
