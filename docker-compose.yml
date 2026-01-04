@@ -37,6 +37,8 @@ services:
       - ../invest/media:/var/www/html/invest/media:ro
       - ../websites/wordpress-app/www/html:/var/www/html/wordpress:ro
       - ../websites/wordpress-app/www/phpmyadmin:/var/www/phpmyadmin:ro
+      - ../websites/django_blog/staticfiles:/var/www/html/django_blog/static:ro
+      - ../websites/django_blog/media:/var/www/html/django_blog/media:ro
     networks:
       - theprepared
     
