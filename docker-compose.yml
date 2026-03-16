@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     environment:
       - DOCKER_API_VERSION=1.44
+      - TZ=Asia/Seoul
     command:
       - "--configFile=/etc/traefik/traefik.yml"
       - "--log.level=DEBUG"
@@ -20,6 +21,8 @@ services:
     volumes:
       - "./letsencrypt:/letsencrypt"
       - "./traefik.yml:/etc/traefik/traefik.yml:ro"
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     networks:
       - theprepared
     labels:
@@ -31,6 +34,8 @@ services:
       dockerfile: Dockerfile
     container_name: nginx
     restart: unless-stopped
+    environment:
+      - TZ=Asia/Seoul
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ../PFM/account-app/staticfiles:/var/www/html/account/static:ro
@@ -40,6 +45,8 @@ services:
       - ../websites/wordpress-app/www/phpmyadmin:/var/www/phpmyadmin:ro
       - ../websites/django_blog/staticfiles:/var/www/html/django_blog/static:ro
       - ../websites/django_blog/media:/var/www/html/django_blog/media:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     networks:
       - theprepared
     
