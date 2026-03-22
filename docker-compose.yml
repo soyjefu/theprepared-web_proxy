@@ -8,6 +8,11 @@ services:
     image: "traefik:latest"
     container_name: "traefik"
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 256M
     environment:
       - DOCKER_API_VERSION=1.44
       - TZ=Asia/Seoul
@@ -34,6 +39,11 @@ services:
       dockerfile: Dockerfile
     container_name: nginx
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 256M
     environment:
       - TZ=Asia/Seoul
     volumes:
