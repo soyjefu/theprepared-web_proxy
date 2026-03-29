@@ -36,15 +36,29 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Asia/Seoul
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ../PFM/account-app/staticfiles:/var/www/html/account/static:ro
-      - ../invest/staticfiles:/var/www/html/invest/static:ro
-      - ../invest/media:/var/www/html/invest/media:ro
-      - ../websites/wordpress-app/www/html:/var/www/html/wordpress:ro
-      - ../websites/wordpress-app/www/phpmyadmin:/var/www/phpmyadmin:ro
-      - ../websites/django_blog/staticfiles:/var/www/html/django_blog/static:ro
-      - ../websites/django_blog/media:/var/www/html/django_blog/media:ro
+      # 5개 Django 앱 static/media
+      - ../../youngseo/asancmhos/staticfiles:/var/www/html/asan/static:ro
+      - ../../youngseo/asancmhos/media:/var/www/html/asan/media:ro
+      - ../../youngseo/cmhos/staticfiles:/var/www/html/cmhos/static:ro
+      - ../../youngseo/cmhos/media:/var/www/html/cmhos/media:ro
+      - ../../youngseo/cmw/staticfiles:/var/www/html/cmw/static:ro
+      - ../../youngseo/cmw/media:/var/www/html/cmw/media:ro
+      - ../../youngseo/ysw/staticfiles:/var/www/html/ysw/static:ro
+      - ../../youngseo/ysw/media:/var/www/html/ysw/media:ro
+      - ../../youngseo/noin/staticfiles:/var/www/html/noin/static:ro
+      - ../../youngseo/noin/media:/var/www/html/noin/media:ro
+      # 이전 볼륨 (비활성)
+      # - ../PFM/account-app/staticfiles:/var/www/html/account/static:ro
+      # - ../invest/staticfiles:/var/www/html/invest/static:ro
+      # - ../invest/media:/var/www/html/invest/media:ro
+      # - ../websites/wordpress-app/www/html:/var/www/html/wordpress:ro
+      # - ../websites/wordpress-app/www/phpmyadmin:/var/www/phpmyadmin:ro
+      # - ../websites/django_blog/staticfiles:/var/www/html/django_blog/static:ro
+      # - ../websites/django_blog/media:/var/www/html/django_blog/media:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     networks:

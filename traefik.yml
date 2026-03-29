@@ -40,55 +40,67 @@ http:
         certResolver: "myresolver"
       service: "api@internal"
 
-    # 모든 HTTP/HTTPS 트래픽을 Nginx로 라우팅
     nginx-http:
-      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`soy.theprepared.kr`) || Host(`stock.theprepared.kr`)"
+      rule: "Host(`cmhos.theprepared.kr`) || Host(`asan.theprepared.kr`) || Host(`cmw.theprepared.kr`) || Host(`ysw.theprepared.kr`) || Host(`noin.theprepared.kr`)"
       entryPoints:
         - "web"
       service: "nginx-service"
       priority: 10
 
     nginx-https:
-      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`soy.theprepared.kr`) || Host(`stock.theprepared.kr`)"
+      rule: "Host(`cmhos.theprepared.kr`) || Host(`asan.theprepared.kr`) || Host(`cmw.theprepared.kr`) || Host(`ysw.theprepared.kr`) || Host(`noin.theprepared.kr`)"
       entryPoints:
         - "websecure"
       tls:
         certResolver: "myresolver"
-      middlewares:
-        - "www-to-non-www"
       service: "nginx-service"
       priority: 10
-    
-    # FreshRSS HTTP 라우터 추가
-    freshrss-http:
-      rule: "Host(`rss.theprepared.kr`)"
-      entryPoints:
-        - "web"
-      service: "freshrss-service"
-      priority: 5
 
-    # FreshRSS HTTPS 라우터 추가
-    freshrss-https:
-      rule: "Host(`rss.theprepared.kr`)"
-      entryPoints:
-        - "websecure"
-      tls:
-        certResolver: "myresolver"
-      service: "freshrss-service"
-      priority: 5
+    # --- 이전 설정 (비활성) ---
+    # nginx-http:
+    #   rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`soy.theprepared.kr`) || Host(`stock.theprepared.kr`)"
+    #   entryPoints:
+    #     - "web"
+    #   service: "nginx-service"
+    #   priority: 10
+    #
+    # nginx-https:
+    #   rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`soy.theprepared.kr`) || Host(`stock.theprepared.kr`)"
+    #   entryPoints:
+    #     - "websecure"
+    #   tls:
+    #     certResolver: "myresolver"
+    #   middlewares:
+    #     - "www-to-non-www"
+    #   service: "nginx-service"
+    #   priority: 10
+    #
+    # freshrss-http:
+    #   rule: "Host(`rss.theprepared.kr`)"
+    #   entryPoints:
+    #     - "web"
+    #   service: "freshrss-service"
+    #   priority: 5
+    #
+    # freshrss-https:
+    #   rule: "Host(`rss.theprepared.kr`)"
+    #   entryPoints:
+    #     - "websecure"
+    #   tls:
+    #     certResolver: "myresolver"
+    #   service: "freshrss-service"
+    #   priority: 5
 
-  services: 
-    # Nginx 서비스
+  services:
     nginx-service:
       loadBalancer:
         servers:
           - url: "http://nginx:80"
-    
-    # FreshRSS 서비스
-    freshrss-service:
-      loadBalancer:
-        servers:
-          - url: "http://freshrss_app:80"
+
+    # freshrss-service:
+    #   loadBalancer:
+    #     servers:
+    #       - url: "http://freshrss_app:80"
 
   middlewares:
     www-to-non-www:
@@ -96,4 +108,3 @@ http:
         regex: "^https://www\\.(.*)"
         replacement: "https://${1}"
         permanent: true
-
