@@ -56,8 +56,36 @@ http:
         certResolver: "myresolver"
       middlewares:
         - "www-to-non-www"
+        - "rate-limit"
+        - "inflight-req"
       service: "nginx-service"
       priority: 10
+
+    # 어드민 경로 — 강한 rate limit (brute force 격퇴)
+    nginx-admin-https:
+      rule: "Host(`theprepared.kr`) && (PathPrefix(`/cms-admin`) || PathPrefix(`/django-admin`))"
+      entryPoints:
+        - "websecure"
+      tls:
+        certResolver: "myresolver"
+      middlewares:
+        - "rate-limit-admin"
+        - "inflight-req"
+      service: "nginx-service"
+      priority: 30
+
+    # 댓글 POST 등 쓰기 경로 — 더 강한 rate limit
+    nginx-write-https:
+      rule: "Host(`theprepared.kr`) && PathPrefix(`/c/`)"
+      entryPoints:
+        - "websecure"
+      tls:
+        certResolver: "myresolver"
+      middlewares:
+        - "rate-limit-write"
+        - "inflight-req"
+      service: "nginx-service"
+      priority: 30
     
     # FreshRSS HTTP 라우터 추가
     freshrss-http:
@@ -77,18 +105,42 @@ http:
       service: "freshrss-service"
       priority: 5
 
-  services: 
+    # autopost(Automated Posting Engine) HTTP 라우터
+    autopost-http:
+      rule: "Host(`autopost.theprepared.kr`)"
+      entryPoints:
+        - "web"
+      service: "autopost-service"
+      priority: 5
+
+    # autopost HTTPS 라우터
+    autopost-https:
+      rule: "Host(`autopost.theprepared.kr`)"
+      entryPoints:
+        - "websecure"
+      tls:
+        certResolver: "myresolver"
+      service: "autopost-service"
+      priority: 5
+
+  services:
     # Nginx 서비스
     nginx-service:
       loadBalancer:
         servers:
           - url: "http://nginx:80"
-    
+
     # FreshRSS 서비스
     freshrss-service:
       loadBalancer:
         servers:
           - url: "http://freshrss_app:80"
+
+    # autopost 서비스
+    autopost-service:
+      loadBalancer:
+        servers:
+          - url: "http://autopost_app:8000"
 
   middlewares:
     www-to-non-www:
@@ -96,4 +148,43 @@ http:
         regex: "^https://www\\.(.*)"
         replacement: "https://${1}"
         permanent: true
+
+    # IP당 평균 20 req/s, burst 200 — 정상 페이지 로드(이미지/폰트 burst)는 통과,
+    # 봇 스캐너의 연속 폭주는 429 차단. RemoteAddr 기반 (depth=0).
+    rate-limit:
+      rateLimit:
+        average: 20
+        period: 1s
+        burst: 200
+        sourceCriterion:
+          ipStrategy:
+            depth: 0
+
+    # IP당 동시 in-flight 요청 50 — slowloris 류 방어.
+    inflight-req:
+      inFlightReq:
+        amount: 50
+        sourceCriterion:
+          ipStrategy:
+            depth: 0
+
+    # 어드민/로그인 강한 제한 — 평균 2/s burst 10
+    rate-limit-admin:
+      rateLimit:
+        average: 2
+        period: 1s
+        burst: 10
+        sourceCriterion:
+          ipStrategy:
+            depth: 0
+
+    # 댓글 POST 등 쓰기 경로 강한 제한 — 평균 1/s burst 5
+    rate-limit-write:
+      rateLimit:
+        average: 1
+        period: 1s
+        burst: 5
+        sourceCriterion:
+          ipStrategy:
+            depth: 0
 

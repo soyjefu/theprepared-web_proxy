@@ -1,5 +1,5 @@
 .env
-letsencrypt/acme.json
+letsencrypt/
 traefik.yml
 nginx/nginx.conf
 __pycache__/
