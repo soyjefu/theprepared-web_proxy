@@ -55,6 +55,7 @@ services:
       - ../websites/wordpress-app/www/phpmyadmin:/var/www/phpmyadmin:ro
       - ../websites/django_blog/staticfiles:/var/www/html/django_blog/static:ro
       - ../websites/django_blog/media:/var/www/html/django_blog/media:ro
+      - ../sports_betting/staticfiles:/var/www/html/sports_betting/static:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     networks:
