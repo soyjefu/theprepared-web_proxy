@@ -123,6 +123,24 @@ http:
       service: "autopost-service"
       priority: 5
 
+    # law HTTP 라우터
+    law-http:
+      rule: "Host(`law.theprepared.kr`)"
+      entryPoints:
+        - "web"
+      service: "law-service"
+      priority: 5
+
+    # law HTTPS 라우터
+    law-https:
+      rule: "Host(`law.theprepared.kr`)"
+      entryPoints:
+        - "websecure"
+      tls:
+        certResolver: "myresolver"
+      service: "law-service"
+      priority: 5
+
   services:
     # Nginx 서비스
     nginx-service:
@@ -141,6 +159,12 @@ http:
       loadBalancer:
         servers:
           - url: "http://autopost_app:8000"
+
+    # law 서비스
+    law-service:
+      loadBalancer:
+        servers:
+          - url: "http://law_web:8000"
 
   middlewares:
     www-to-non-www:
