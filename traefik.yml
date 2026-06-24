@@ -18,8 +18,7 @@ certificatesResolvers:
     acme:
       email: 5ll34090@gmail.com
       storage: "/letsencrypt/acme.json"
-      httpChallenge:
-        entryPoint: "web"
+      tlsChallenge: {}
 
 api:
   dashboard: true
@@ -42,14 +41,14 @@ http:
 
     # 모든 HTTP/HTTPS 트래픽을 Nginx로 라우팅
     nginx-http:
-      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`stock-k.theprepared.kr`) || Host(`bet.theprepared.kr`)"
+      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`stock-k.theprepared.kr`)"
       entryPoints:
         - "web"
       service: "nginx-service"
       priority: 10
 
     nginx-https:
-      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`stock-k.theprepared.kr`) || Host(`bet.theprepared.kr`)"
+      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`stock-k.theprepared.kr`)"
       entryPoints:
         - "websecure"
       tls:
