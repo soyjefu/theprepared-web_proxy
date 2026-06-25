@@ -41,14 +41,14 @@ http:
 
     # 모든 HTTP/HTTPS 트래픽을 Nginx로 라우팅
     nginx-http:
-      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`stock-k.theprepared.kr`)"
+      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`stock.theprepared.kr`)"
       entryPoints:
         - "web"
       service: "nginx-service"
       priority: 10
 
     nginx-https:
-      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`stock-k.theprepared.kr`)"
+      rule: "Host(`theprepared.kr`) || Host(`www.theprepared.kr`) || Host(`account.theprepared.kr`) || Host(`stock.theprepared.kr`)"
       entryPoints:
         - "websecure"
       tls:
@@ -123,22 +123,22 @@ http:
       priority: 5
 
     # law HTTP 라우터
-    law-http:
-      rule: "Host(`law.theprepared.kr`)"
-      entryPoints:
-        - "web"
-      service: "law-service"
-      priority: 5
+    #law-http:
+    #  rule: "Host(`law.theprepared.kr`)"
+    #  entryPoints:
+    #    - "web"
+    #  service: "law-service"
+    #  priority: 5
 
     # law HTTPS 라우터
-    law-https:
-      rule: "Host(`law.theprepared.kr`)"
-      entryPoints:
-        - "websecure"
-      tls:
-        certResolver: "myresolver"
-      service: "law-service"
-      priority: 5
+    #law-https:
+    #  rule: "Host(`law.theprepared.kr`)"
+    #  entryPoints:
+    #    - "websecure"
+    #  tls:
+    #    certResolver: "myresolver"
+    #  service: "law-service"
+    #  priority: 5
 
   services:
     # Nginx 서비스
